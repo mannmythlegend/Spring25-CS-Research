@@ -194,7 +194,7 @@ const int MaxSort = 2000000;
 int main(int argc, char** argv)
 {
   // number of elements to be sorted
-  for(int i=10; i<21; i++){
+  for(int i=10; i<18; i++){
         Number::reset();
         int numElements = 1 << i; // 2^i
         
@@ -251,17 +251,8 @@ int main(int argc, char** argv)
         printf("\nSimple\t");
         data = random;
         Number::reset();
-        for(int i=0; i<data.size(); i+=3){
-            oss.select(i+1);
-                
-            if(oss.getA(i-1) < oss.getA(i-2)){
-                Number temp=oss.getA(i-1);
-                oss.setA(i-1, oss.getA(i-2));
-                oss.setA(i-2, temp);
-                    
-                oss.setV(i-1, 1);
-                oss.setV(i-2, 1);
-            }
+        for (int i = 0; i < data.size(); i += 2) {
+            oss.select(i + 1);
         }
         printf("\t%d", Number::numLessThan);
 

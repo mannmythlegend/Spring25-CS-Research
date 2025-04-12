@@ -197,7 +197,6 @@ int main(int argc, char** argv)
   for(int i=10; i<21; i++){
         Number::reset();
         int numElements = 1 << i; // 2^i
-        
         printf("i=%d\t", i);
         printf("\nAlgorithm\tComparisons");
 
@@ -248,22 +247,51 @@ int main(int argc, char** argv)
 
         // simple algo
         OnlineSelectionSearch oss(random);
-        printf("\nSimple\t");
-        data = random;
-        Number::reset();
-        for(int i=0; i<data.size(); i+=3){
-            oss.select(i+1);
-                
-            if(oss.getA(i-1) < oss.getA(i-2)){
-                Number temp=oss.getA(i-1);
-                oss.setA(i-1, oss.getA(i-2));
-                oss.setA(i-2, temp);
-                    
-                oss.setV(i-1, 1);
-                oss.setV(i-2, 1);
+            printf("\nSimple\t");
+            data = random;
+            Number::reset();
+            for(int i=0; i<data.size(); i+=4){
+                if(i!=data.size()){
+                    oss.select(i+1);
+                }
+                if(i>0){
+        
+                    if(oss.getA(i-3) > oss.getA(i-2)){
+                        Number temp = oss.getA(i-3);
+                        oss.setA(i-3, oss.getA(i-2));
+                        oss.setA(i-2, temp);
+                    }
+                    if(oss.getA(i-2) > oss.getA(i-1)){
+                        Number temp = oss.getA(i-2);
+                        oss.setA(i-2, oss.getA(i-1));
+                        oss.setA(i-1, temp);
+                    }
+                    if(oss.getA(i-3) > oss.getA(i-2)){
+                        Number temp = oss.getA(i-3);
+                        oss.setA(i-3, oss.getA(i-2));
+                        oss.setA(i-2, temp);
+                    }
+                    oss.setV(i-3, 1);
+                    oss.setV(i-2, 1);
+                    oss.setV(i-1, 1);
+                }
             }
-        }
-        printf("\t%d", Number::numLessThan);
+            if(oss.getA(data.size()-3) > oss.getA(data.size()-2)){
+                Number temp = oss.getA(data.size()-3);
+                oss.setA(data.size()-3, oss.getA(data.size()-2));
+                oss.setA(data.size()-2, temp);
+            }
+            if(oss.getA(data.size()-2) > oss.getA(data.size()-1)){
+                Number temp = oss.getA(data.size()-2);
+                oss.setA(data.size()-2, oss.getA(data.size()-1));
+                oss.setA(data.size()-1, temp);
+            }
+            if(oss.getA(data.size()-3) > oss.getA(data.size()-2)){
+                Number temp = oss.getA(data.size()-3);
+                oss.setA(data.size()-3, oss.getA(data.size()-2));
+                oss.setA(data.size()-2, temp);
+            }
+            printf("\t%d", Number::numLessThan);
 
         printf("\n");
     }

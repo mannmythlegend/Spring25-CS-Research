@@ -197,7 +197,6 @@ int main(int argc, char** argv)
   for(int i=10; i<21; i++){
         Number::reset();
         int numElements = 1 << i; // 2^i
-        
         printf("i=%d\t", i);
         printf("\nAlgorithm\tComparisons");
 
@@ -248,22 +247,45 @@ int main(int argc, char** argv)
 
         // simple algo
         OnlineSelectionSearch oss(random);
-        printf("\nSimple\t");
-        data = random;
-        Number::reset();
-        for(int i=0; i<data.size(); i+=3){
-            oss.select(i+1);
-                
-            if(oss.getA(i-1) < oss.getA(i-2)){
-                Number temp=oss.getA(i-1);
-                oss.setA(i-1, oss.getA(i-2));
-                oss.setA(i-2, temp);
-                    
-                oss.setV(i-1, 1);
-                oss.setV(i-2, 1);
+            printf("\nSimple\t");
+            data = random;
+            Number::reset();
+            for (int i = 0; i < data.size(); i += 5) {
+                oss.select(i+1);
+            
+                if (i > 0) {
+                    std::vector<Number> temp = {
+                        oss.getA(i-4),
+                        oss.getA(i-3),
+                        oss.getA(i-2),
+                        oss.getA(i-1)
+                    };
+                    mergeSort(temp.begin(), temp.end());
+                    oss.setA(i-4, temp[0]);
+                    oss.setA(i-3, temp[1]);
+                    oss.setA(i-2, temp[2]);
+                    oss.setA(i-1, temp[3]);
+            
+                    // Mark as visited
+                    oss.setV(i - 4, 1);
+                    oss.setV(i - 3, 1);
+                    oss.setV(i - 2, 1);
+                    oss.setV(i - 1, 1);
+                }
             }
-        }
-        printf("\t%d", Number::numLessThan);
+            int n = data.size();
+            std::vector<Number> temp = {
+                oss.getA(n-4),
+                oss.getA(n-3),
+                oss.getA(n-2),
+                oss.getA(n-1)
+            };
+            mergeSort(temp.begin(), temp.end());
+            oss.setA(n-4, temp[0]);
+            oss.setA(n-3, temp[1]);
+            oss.setA(n-2, temp[2]);
+            oss.setA(n-1, temp[3]);
+            printf("\t%d", Number::numLessThan);
 
         printf("\n");
     }

@@ -1,37 +1,45 @@
 #include <iostream>
-#include <cstdlib>  // For rand() and srand()
-#include <ctime>
 #include <fstream>
-
-using namespace std;
+#include <random>
+#include <string>
+#include <filesystem>
 
 int main() {
-    // Seed the random number generator
-    srand(time(0));
-    ofstream file;
-    string filename = " ";
- 
+    const int minPower = 10;
+    const int maxPower = 20;
+    const int numFilesPerSize = 100;
+    const int maxValue = 1100000;
 
-    int power;
-    cout << "Enter the power of 2 for the array size: ";
-    cin >> power;
-    cout << "Enter filename: ";
-    cin >> filename;
-    
+    // Create output directory
+    std::filesystem::create_directory("output");
 
-    int size = 1 << power; // Equivalent to pow(2, power)
+    // Random number generator setup
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> distrib(1, maxValue);
 
-    // Allocate array dynamically
-    int* arr = new int[size];
+    for (int power = minPower; power <= maxPower; ++power) {
+        int listSize = 1 << power;
 
-    file.open(filename);
-    for (int i = 0; i < size; i++) {
-        arr[i] = (rand() % 1000000) + 1;
-        file << arr[i] << endl;
+        for (int fileNum = 0; fileNum < numFilesPerSize; ++fileNum) {
+            std::string filename = "output/data_" + std::to_string(power) + "_" + std::to_string(fileNum) + ".txt";
+            std::ofstream outFile(filename);
+
+            if (!outFile) {
+                std::cerr << "Failed to create file: " << filename << std::endl;
+                continue;
+            }
+
+            for (int i = 0; i < listSize; ++i) {
+                outFile << distrib(gen) << std::endl;;
+                if (i != listSize - 1) outFile << " ";
+            }
+
+            outFile.close();
+            std::cout << "Generated: " << filename << std::endl;
+        }
     }
-    file.close();
-    delete[] arr;
-    cout << "success!" << endl;
 
+    std::cout << "All files generated successfully!" << std::endl;
     return 0;
 }
